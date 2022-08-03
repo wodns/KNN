@@ -1,4 +1,3 @@
-D:\Engenharia Elétrica\2011.1\Estruturas\KNN\Dados\Liver1.txt
-D:\Engenharia Elétrica\2011.1\Estruturas\KNN\Dados\Liver2.txt
-21
-2
+C:\Users\wodns\Desktop\knn\Dados\BREAST1.txt
+C:\Users\wodns\Desktop\knn\Dados\BREAST2.txt
+5
