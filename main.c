@@ -3,6 +3,7 @@
 #include <string.h>
 #include <math.h>
 #include <conio.h>
+#include <time.h>
 
 
 #define SETUP_FILE "setup.txt"
@@ -39,7 +40,6 @@ typedef struct point_descriptor {
     point *last;
 } point_descriptor;
 
-node *next;
 descriptor *head;
 descriptor *descriptor_node;
 int erro;
@@ -132,10 +132,10 @@ void createNewNode(int indexInFile, float distance, int evaluation, int k)
                 while(q != NULL) {
                     if(distance <= (q->distance)) {
                         //printf("� menor");
-                        p->next=q;
-                        p->previous=q->previous;
-                        q->previous->next=p;
-                        q->previous=p;
+                        p->next = q;
+                        p->previous = q->previous;
+                        q->previous->next = p;
+                        q->previous = p;
                         break;
                     }
                     q = q->next;
@@ -279,7 +279,7 @@ int createList(void)
         descriptor_of_point_test->quant = 0;
         descriptor_of_point_test->last = NULL;
 
-        ptr = strtok(line, " ");
+        ptr = strtok(line, ",");
 
         i = 0;
         while(ptr != NULL) {
@@ -300,7 +300,7 @@ int createList(void)
                 descriptor_of_point_test->last = ptr_aux;
             }
             descriptor_of_point_test->quant += 1;
-            ptr = strtok(NULL, " ");
+            ptr = strtok(NULL, ",");
             i++;
         }
         /*point_test = descriptor_of_point_test->first;
@@ -316,7 +316,7 @@ int createList(void)
             descriptor_of_point_training->quant = 0;
             descriptor_of_point_training->last = NULL;
 
-            ptr = strtok(line, " ");
+            ptr = strtok(line, ",");
             while(ptr != NULL) {
                 ptr_aux = (point *)malloc(sizeof(point));
                 if(ptr_aux == NULL) {
@@ -334,7 +334,7 @@ int createList(void)
                     descriptor_of_point_training->last = ptr_aux;
                 }
                 descriptor_of_point_training->quant += 1;
-                ptr = strtok(NULL, " ");
+                ptr = strtok(NULL, ",");
             }
 
             /* Calculate the Euclidean Distance */
@@ -363,17 +363,18 @@ int createList(void)
         int evaluation[MAX_EVALUATION];
 
         int o;
-        for(o=0; o<=7; o++) evaluation[o]=0;
-
+        for(o=0; o<=7; o++)
+            evaluation[o]=0;\
         while(p != NULL) {
-            printf("Distance: %f ---> Evaluation: %d\n", p->distance,p->evaluation);
+            printf("Distance: %f ---> Evaluation: %d\n", p->distance, p->evaluation);
             evaluation[p->evaluation] += 1;
             p = p->next;
         }
-        int greater = 0;
 
+        int greater = 0;
         for(o=1; o<=6; o++)
-            if(evaluation[o] > evaluation[o-1]) greater = o;
+            if(evaluation[o] > evaluation[o-1])
+                greater = o;
 
         j++;
 
@@ -387,16 +388,17 @@ int createList(void)
 
         //printf("lineTo: %s", to);
 
-        int ch = ' ';
+        int ch = ',';
 
         /*printf("\n\nto: %s\n\n", to);
         system("pause");*/
 
-        char *lastIndexofCh = strrchr(to,ch);
+        char *lastIndexofCh = strrchr(to, ch);
 
         int hasDecimalPoint;
 
-        if(strrchr(lastIndexofCh, '.') != NULL) hasDecimalPoint = 1;
+        if(strrchr(lastIndexofCh, '.') != NULL)
+            hasDecimalPoint = 1;
 
         /*printf("%s\n", lastIndexofCh);
         system("pause");*/
@@ -413,7 +415,8 @@ int createList(void)
 
         strcat(res, itoa(greater, buffer, 10));
 
-        if(hasDecimalPoint == 1) strcat(res, ".0");
+        if(hasDecimalPoint == 1)
+            strcat(res, ".0");
 
         strcat(res, "\n");
 
@@ -421,7 +424,10 @@ int createList(void)
 
         res = res + tam; /* Put the pointer at the beginnig of KNN evaluation */
 
-        if(atof(original_evaluation) != atof(res)) erro += 1;
+        /*if(atof(original_evaluation) != atof(res))
+            erro += 1;*/
+        if((float) descriptor_of_point_test->last->coordinate != (float) greater)
+            erro += 1;
 
         res = res - tam; /* Back the pointer to the original position */
 
@@ -455,8 +461,13 @@ void showStatisticResults(void) {
 int main(void)
 {
     erro = 0;
+    clock_t start, end;
+
+    start = clock();
     createInitialConditions();
     createList();
+    end = clock();
     showStatisticResults();
+    printf("%f\n", (float) (end - start)/CLOCKS_PER_SEC);
     return 0;
 }
